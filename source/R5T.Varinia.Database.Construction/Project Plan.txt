@@ -1,0 +1,4 @@
+R5T.Varinia.Database.Construction - A construction console-app for the library R5T.Varinia.Database.
+
+Goals
+
