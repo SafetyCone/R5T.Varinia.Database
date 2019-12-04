@@ -55,8 +55,8 @@ namespace R5T.Varinia.Database
 
                 var output = new LngLat()
                 {
-                    Lng = entity.Longitude,
-                    Lat = entity.Latitude,
+                    Lng = entity.Longitude.Value,
+                    Lat = entity.Latitude.Value,
                 };
                 return output;
             });
