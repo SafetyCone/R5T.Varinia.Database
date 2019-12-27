@@ -9,17 +9,12 @@ using R5T.Venetia;
 
 namespace R5T.Varinia.Database
 {
-    public class LocationRepository : DatabaseRepositoryBase<LocationDbContext>, ILocationRepository
+    public class LocationRepository<TDbContext> : ProvidedDatabaseRepositoryBase<TDbContext>, ILocationRepository
+        where TDbContext: DbContext, ILocationDbContext
     {
-        public LocationRepository(DbContextOptions<LocationDbContext> dbContextOptions)
-            : base(dbContextOptions)
+        public LocationRepository(DbContextOptions<TDbContext> dbContextOptions, IDbContextProvider<TDbContext> dbContextProvider)
+            : base(dbContextOptions, dbContextProvider)
         {
-        }
-
-        public override LocationDbContext GetNewDbContext()
-        {
-            var dbContext = new LocationDbContext(this.DbContextOptions);
-            return dbContext;
         }
 
         public void Delete(LocationIdentity identity)
