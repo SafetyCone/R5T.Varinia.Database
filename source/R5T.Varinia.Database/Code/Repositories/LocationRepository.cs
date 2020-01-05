@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -17,23 +18,23 @@ namespace R5T.Varinia.Database
         {
         }
 
-        public void Delete(LocationIdentity identity)
+        public async Task Delete(LocationIdentity identity)
         {
-            this.ExecuteInContext(dbContext =>
+            await this.ExecuteInContextAsync(async dbContext =>
             {
-                var entity = dbContext.Locations.Where(x => x.GUID == identity.Value).Single();
+                var entity = await dbContext.Locations.Where(x => x.GUID == identity.Value).SingleAsync();
 
                 dbContext.Locations.Remove(entity);
 
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             });
         }
 
-        public bool Exists(LocationIdentity identity)
+        public async Task<bool> Exists(LocationIdentity identity)
         {
-            var exists = this.ExecuteInContext(dbContext =>
+            var exists = await this.ExecuteInContextAsync(async dbContext =>
             {
-                var entity = dbContext.Locations.Where(x => x.GUID == identity.Value).SingleOrDefault();
+                var entity = await dbContext.Locations.Where(x => x.GUID == identity.Value).SingleOrDefaultAsync();
 
                 var output = entity is object;
                 return output;
@@ -42,11 +43,11 @@ namespace R5T.Varinia.Database
             return exists;
         }
 
-        public LngLat GetLngLat(LocationIdentity identity)
+        public async Task<LngLat> GetLngLat(LocationIdentity identity)
         {
-            var lngLat = this.ExecuteInContext(dbContext =>
+            var lngLat = await this.ExecuteInContextAsync(async dbContext =>
             {
-                var entity = dbContext.Locations.Where(x => x.GUID == identity.Value).Single();
+                var entity = await dbContext.Locations.Where(x => x.GUID == identity.Value).SingleAsync();
 
                 var output = new LngLat()
                 {
@@ -59,11 +60,11 @@ namespace R5T.Varinia.Database
             return lngLat;
         }
 
-        public LocationIdentity New()
+        public async Task<LocationIdentity> New()
         {
             var locationIdentity = LocationIdentity.New();
 
-            this.ExecuteInContext(dbContext =>
+            await this.ExecuteInContextAsync(async dbContext =>
             {
                 var entity = new Entities.Location()
                 {
@@ -72,17 +73,17 @@ namespace R5T.Varinia.Database
 
                 dbContext.Locations.Add(entity);
 
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             });
 
             return locationIdentity;
         }
 
-        public LocationIdentity New(LngLat lngLat)
+        public async Task<LocationIdentity> New(LngLat lngLat)
         {
             var locationIdentity = LocationIdentity.New();
 
-            this.ExecuteInContext(dbContext =>
+            await this.ExecuteInContextAsync(async dbContext =>
             {
                 var entity = new Entities.Location()
                 {
@@ -93,22 +94,22 @@ namespace R5T.Varinia.Database
 
                 dbContext.Locations.Add(entity);
 
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             });
 
             return locationIdentity;
         }
 
-        public void SetLngLat(LocationIdentity identity, LngLat lngLat)
+        public async Task SetLngLat(LocationIdentity identity, LngLat lngLat)
         {
-            this.ExecuteInContext(dbContext =>
+            await this.ExecuteInContextAsync(async dbContext =>
             {
-                var entity = dbContext.Locations.Where(x => x.GUID == identity.Value).Single();
+                var entity = await dbContext.Locations.Where(x => x.GUID == identity.Value).SingleAsync();
 
                 entity.Longitude = lngLat.Lng;
                 entity.Latitude = lngLat.Lat;
 
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             });
         }
     }
