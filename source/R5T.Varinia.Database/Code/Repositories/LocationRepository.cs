@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,6 +42,23 @@ namespace R5T.Varinia.Database
             });
 
             return exists;
+        }
+
+        public Task<List<Location>> GetAllWithinBoundingBox(BoundingBox boundingBox)
+        {
+            var locations = this.ExecuteInContextAsync(async dbContext =>
+            {
+                var entities = await dbContext.Locations
+                    .Where(x =>
+                        x.Longitude > boundingBox.MinimumX && x.Longitude < boundingBox.MaximumX
+                        && x.Latitude > boundingBox.MinimumY && x.Latitude < boundingBox.MaximumY)
+                    .ToListAsync();
+
+                var output = entities.Select(x => x.ToAppType()).ToList();
+                return output;
+            });
+
+            return locations;
         }
 
         public async Task<LngLat> GetLngLat(LocationIdentity identity)
